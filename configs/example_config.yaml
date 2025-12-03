@@ -1,0 +1,17 @@
+name: data-processor
+version: "2.1.0"
+environment: development
+
+settings:
+  workers: 4
+  queue_size: 100
+  retry_attempts: 3
+
+database:
+  host: localhost
+  port: 5432
+  name: dev_db
+
+features:
+  async_processing: true
+  monitoring: true
