@@ -1,0 +1,99 @@
+---
+title: "Docker Environment"
+format: html
+---
+
+## Why Docker?
+
+Docker solves the classic "works on my machine" problem by packaging the application and all its dependencies into a single, portable container.
+
+## The Dockerfile
+
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application
+COPY app/ ./app/
+COPY configs/ ./configs/
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+### What This Gives You
+
+**Consistent Python version**: Everyone uses Python 3.11, no version conflicts
+
+**Locked dependencies**: `requirements.txt` pins exact package versions
+
+**Clean environment**: No leftover packages or conflicting libraries
+
+**Fast onboarding**: New developers run one `docker build` command instead of 30 minutes of setup
+
+## Local Development
+
+### Build the Image
+```bash
+docker build -t config-validator:latest .
+```
+
+### Run the Container
+```bash
+docker run -p 8000:8000 config-validator:latest
+```
+
+### Test the API
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# Validate all configs
+curl http://localhost:8000/validate-files
+```
+
+## Environment Benefits for Teams
+
+### For New Developers
+- Clone repo
+- Run `docker build` and `docker run`
+- Working environment in under 2 minutes
+
+No need to:
+- Install Python
+- Create virtualenv
+- Troubleshoot pip install errors
+- Figure out which Python version to use
+
+### For CI/CD
+- Jenkins runs the exact same Docker image
+- No "CI environment is different" surprises
+- Tests run in production-like container
+
+### For Deployment
+- Same image tested in CI can be deployed to staging/production
+- No "repackaging" step that introduces errors
+- Rollback = deploy previous image tag
+
+## Reusing This Docker Setup
+
+Teams can adapt this `Dockerfile` by:
+
+1. Change base image if needed (e.g., `python:3.9`)
+2. Add additional system dependencies with `RUN apt-get install`
+3. Adjust `CMD` for different entrypoints
+4. Add environment variables for configuration
+
+The multi-stage build pattern (commented in full Dockerfile) can further reduce final image size for production.
+
+## Next Steps
+
+- Understand the [Jenkins Pipeline](pipeline.qmd)
+- Read the [Project Overview](index.qmd)
+- Try building and running locally

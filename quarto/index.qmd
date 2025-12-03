@@ -1,0 +1,61 @@
+---
+title: "Config Validator Service"
+subtitle: "Improving Developer Productivity with Docker & Jenkins"
+format: html
+---
+
+## Overview
+
+The Config Validator Service is a small but realistic internal tool that demonstrates how Docker containerization and Jenkins automation can significantly improve developer productivity.
+
+## The Problem
+
+Development teams face several common pain points:
+
+- **Environment inconsistencies**: "Works on my machine" problems slow down debugging
+- **Manual validation**: Developers waste time manually checking configuration files
+- **Late error detection**: Config errors discovered in production cause incidents
+- **Onboarding friction**: New developers spend hours setting up tools
+
+## The Solution
+
+This project addresses these issues through:
+
+### 1. Docker Containerization
+A single Docker image packages the entire validation service with all dependencies. Every developer and the CI system use exactly the same environment.
+
+**Benefit**: No more "missing dependency" or "wrong Python version" issues.
+
+### 2. Automated Jenkins Pipeline
+Jenkins automatically builds, tests, and validates configs on every change, providing fast feedback.
+
+**Benefit**: Developers know within minutes if their configs are valid, not hours later in staging.
+
+### 3. Reusable Template
+The Dockerfile and Jenkinsfile are clean and generic, ready to be copied into other projects.
+
+**Benefit**: New internal tools can be containerized and automated in minutes, not days.
+
+## How It Works
+
+```
+Developer → Git Push → Jenkins Pipeline → Docker Build → Tests → Validation → Fast Feedback
+```
+
+1. Developer commits code changes
+2. Jenkins detects the change
+3. Pipeline builds a fresh Docker image
+4. Unit tests run inside the container
+5. Config files are validated automatically
+6. Developer gets immediate feedback
+
+## Key Technologies
+
+- **Python & FastAPI**: Fast, modern API framework
+- **Docker**: Consistent execution environment
+- **Jenkins**: Automated CI/CD pipeline
+- **pytest**: Reliable unit testing
+
+## Getting Started
+
+See the [Environment Setup](environment.qmd) guide to run this locally, or check the [Pipeline Documentation](pipeline.qmd) to understand the Jenkins automation.

@@ -1,0 +1,102 @@
+---
+title: "Jenkins Pipeline"
+format: html
+---
+
+## Pipeline Architecture
+
+The `Jenkinsfile` defines a declarative pipeline with five key stages that automate the entire build-test-validate workflow.
+
+## Pipeline Stages
+
+### 1. Checkout
+```groovy
+stage('Checkout') {
+    steps {
+        checkout scm
+    }
+}
+```
+- Pulls the latest code from Git
+- Ensures pipeline always works with current source
+
+### 2. Build Docker Image
+```groovy
+stage('Build Docker Image') {
+    steps {
+        docker.build("config-validator:${BUILD_NUMBER}")
+    }
+}
+```
+- Creates a fresh Docker image for this build
+- Tags with build number for traceability
+- Includes all app code and dependencies
+
+### 3. Run Tests
+```groovy
+stage('Run Tests') {
+    steps {
+        docker.image("config-validator:${BUILD_NUMBER}").inside {
+            sh 'pytest app/tests/ -v'
+        }
+    }
+}
+```
+- Executes pytest inside the Docker container
+- Validates core validation logic
+- Fails pipeline if tests don't pass
+
+### 4. Validate Configs
+```groovy
+stage('Validate Configs') {
+    steps {
+        // Runs validator on all configs/ files
+        // Prints clear pass/fail results
+        // Exits with error code if validation fails
+    }
+}
+```
+- This is the **quality gate**
+- Automatically checks all JSON/YAML configs
+- Prevents broken configs from being merged
+
+### 5. Tag & Push
+```groovy
+stage('Tag Image') {
+    steps {
+        docker.image("config-validator:${BUILD_NUMBER}").tag("latest")
+    }
+}
+```
+- Tags successful builds as "latest"
+- Optionally pushes to Docker registry
+- Makes image available for deployment
+
+## Pipeline Benefits
+
+### Fast Feedback
+Developers see validation results in 2-3 minutes instead of discovering config errors hours later.
+
+### Consistent Quality
+Every change goes through the same automated checks—no human steps to skip or forget.
+
+### Easy Debugging
+If validation fails, Jenkins logs show exactly which config file and which rule failed.
+
+### Scalability
+The same pipeline pattern works for 1 config file or 1,000 config files.
+
+## Reusing This Pipeline
+
+Other teams can copy this `Jenkinsfile` by:
+
+1. Replace `config-validator` with their service name
+2. Adjust the validation stage to run their specific checks
+3. Configure Docker registry credentials for push stage
+
+**Result**: New services get automated Docker + Jenkins CI/CD in under 10 minutes.
+
+## Next Steps
+
+- See [Environment Setup](environment.qmd) for local development
+- Check the main [Overview](index.qmd) for project context
