@@ -9,6 +9,7 @@ This project demonstrates how to:
 - Automate validation checks with Jenkins pipelines
 - Provide a reusable template for internal developer tools
 - Improve developer productivity by catching config errors early
+- Use of quarto for documentation
 
 ## 🚀 Quick Start
 
@@ -54,7 +55,7 @@ The `Jenkinsfile` defines a complete CI/CD pipeline:
 2. **Build** - Create Docker image
 3. **Test** - Run pytest unit tests
 4. **Validate** - Check all config files in `configs/`
-5. **Tag & Push** - Publish to Docker registry (optional)
+5. **Tag & Push** - the successful build is tagged as 'latest' so it can be easily deployed
 
 ## 📁 Project Structure
 
@@ -68,6 +69,8 @@ config-validator/
 ├── configs/
 │   ├── example_config.json
 │   └── example_config.yaml
+├── scripts/
+│   ├── validate_configs.py # a script for Jenkins to valide all config files
 ├── Dockerfile
 ├── requirements.txt
 ├── Jenkinsfile
@@ -88,7 +91,7 @@ Valid configurations must:
 - Have `environment` as one of: `development`, `staging`, `production`
 - Have `version` as a non-empty string
 
-## 🎓 Interview Demo Points
+## 📝  Demo Points
 
 1. **Docker containerization** - Show how the Dockerfile creates a consistent environment
 2. **Jenkins automation** - Walk through the pipeline stages and their purpose
@@ -111,7 +114,3 @@ Full documentation available in the `quarto/` directory:
 - **Jenkins** for CI/CD automation
 - **pytest** for unit testing
 - **Quarto** for documentation
-
-## 📝 License
-
-MIT License - feel free to use this as a template for your own projects.
